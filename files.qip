@@ -1,0 +1,20 @@
+set_global_assignment -name VERILOG_FILE 6551rx.v
+set_global_assignment -name VERILOG_FILE 6551tx.v
+set_global_assignment -name VERILOG_FILE 6850RX.v
+set_global_assignment -name VERILOG_FILE 6850TX.v
+set_global_assignment -name VERILOG_FILE applefpga.v
+set_global_assignment -name VERILOG_FILE apple_video.v
+set_global_assignment -name VERILOG_FILE ps2_keyboard_glb.v
+set_global_assignment -name VERILOG_FILE uart_6551.v
+set_global_assignment -name VERILOG_FILE uart_6850.v
+set_global_assignment -name VERILOG_FILE RAMB16_S9.v
+
+set_global_assignment -name VHDL_FILE T65_ALU.vhd 
+set_global_assignment -name VHDL_FILE T65_MCode.vhd 
+set_global_assignment -name VHDL_FILE T65_Pack.vhd 
+set_global_assignment -name VHDL_FILE T65.vhd
+
+set_global_assignment -name VHDL_FILE dpram.vhd
+set_global_assignment -name VHDL_FILE coco_ram.vhd
+
+set_global_assignment -name SYSTEMVERILOG_FILE "Apple-II.sv"
