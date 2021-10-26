@@ -149,7 +149,7 @@ wire		[10:0]	CHAR_ADD;
 wire		[7:0]		CHAR_DATA;
 wire					DOPB_CG;
 
-`include "chargen.v"
+`include "rom/chargen.v"
 
 /*******************************************************
 * Generate Address

@@ -330,18 +330,18 @@ ram0 (
 	.address_a(RAM_ADDRESS[17:0]),
 	.clock_a(CLK_50M),
 	.data_a(RAM_DATA0_OUTPUT[7:0]),
-	.enable_a(RAM0_BE0_N),
-	.wren_a(RAM_RW_N),
+	.enable_a(~RAM0_BE0_N),
+	.wren_a(~RAM_RW_N),
 	.q_a(RAM_DATA0_INPUT[7:0])
 );
 
-dpram #(.addr_width_g(16),.data_width_g(8))
+dpram #(.addr_width_g(18),.data_width_g(8))
 ram1 (
-	.address_a(RAM_ADDRESS[15:0]),
+	.address_a(RAM_ADDRESS[17:0]),
 	.clock_a(CLK_50M),
 	.data_a(RAM_DATA0_OUTPUT[15:8]),
-	.enable_a(RAM0_BE1_N & ~RAM_ADDRESS[17] & ~RAM_ADDRESS[16]),
-	.wren_a(RAM_RW_N),
+	.enable_a(~RAM0_BE1_N ),
+	.wren_a(~RAM_RW_N),
 	.q_a(RAM_DATA0_INPUT[15:8])
 );
 
@@ -385,7 +385,7 @@ applefpga applefpga(
 .V_SYNC(VSync),
 .SWITCH({ 1'b0, 1'b0, status[4],1'b0, 1'b0, 1'b0, status[5], status[6]}),
 
-.BUTTON({ RESET | status[0], 1'b0, 1'b0, 1'b0}),
+.BUTTON({ RESET | status[0]|buttons[1] , 1'b0, 1'b0, 1'b0}),
 .RAM_ADDRESS(RAM_ADDRESS),
 .RAM0_CS_N(RAM0_CS_N),
 .RAM0_BE0_N(RAM0_BE0_N),
@@ -393,7 +393,8 @@ applefpga applefpga(
 .RAM1_CS_N(RAM1_CS_N),
 .RAM_DATA0_INPUT(RAM_DATA0_INPUT),
 .RAM_DATA0_OUTPUT(RAM_DATA0_OUTPUT),
-.RAM_DATA1(RAM_DATA1),
+.RAM_DATA1_INPUT(RAM_DATA1_INPUT),
+.RAM_DATA1_OUTPUT(RAM_DATA1_OUTPUT),
 .RAM_RW_N(RAM_RW_N),
 .SPEAKER(SPEAKER)
 /*
@@ -418,7 +419,8 @@ wire RAM0_BE1_N;
 wire RAM_RW_N;
 wire [15:0]RAM_DATA0_INPUT;
 wire [15:0]RAM_DATA0_OUTPUT;
-wire [15:0]RAM_DATA1;
+wire [15:0]RAM_DATA1_INPUT;
+wire [15:0]RAM_DATA1_OUTPUT;
 wire SPEAKER;
 /*
 ram ram0(

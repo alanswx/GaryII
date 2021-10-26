@@ -75,7 +75,8 @@ CLK50MHZ,
 // RAM, ROM, and Peripherials
 RAM_DATA0_INPUT,				// 16 bit data bus to RAM 0
 RAM_DATA0_OUTPUT,				// 16 bit data bus to RAM 0
-RAM_DATA1,				// 16 bit data bus to RAM 1
+RAM_DATA1_INPUT,				// 16 bit data bus to RAM 1
+RAM_DATA1_OUTPUT,				// 16 bit data bus to RAM 1
 RAM_ADDRESS,			// Common address
 RAM_RW_N,				// Common RW
 RAM0_CS_N,				// Chip Select for RAM 0
@@ -140,7 +141,9 @@ output			RAM0_BE1_N;
 output			RAM_OE_N;
 
 // Main RAM bank 1
-inout	[15:0]	RAM_DATA1;
+//inout	[15:0]	RAM_DATA1;
+input	[15:0]	RAM_DATA1_INPUT;
+output	[15:0]	RAM_DATA1_OUTPUT;
 output			RAM1_CS_N;
 output			RAM1_BE0_N;
 output			RAM1_BE1_N;
@@ -252,6 +255,8 @@ wire	[7:0]		DOA_D8;
 wire	[7:0]		DOA_D0;
 wire	[7:0]		DOA_C8I;
 wire	[7:0]		DOA_C8S;
+wire	[7:0]		DOA_C8;
+
 wire	[7:0]		DOA_C0I;
 wire	[7:0]		DOA_C0S;
 wire				ROM_RW;
@@ -1334,7 +1339,7 @@ assign DATA_IN	=		(ENA_F8)				?	DOA_F8:
 					 		(ENA_E0)				?	DOA_E0:
 					 		(ENA_D8)				?	DOA_D8:
 					 		(ENA_D0)				?	DOA_D0:
-					 		(ENA_C8I)			?	DOA_C8I:
+					 		(ENA_C8I)			?	DOA_C8: /* AJS - D0A_C8I before*/
 					 		(ENA_C8S)			?	DOA_C8S:
 					 		(ENA_C0I)			?	DOA_C0I:
 					 		(ENA_C0S)			?	DOA_C0S:
@@ -1375,6 +1380,7 @@ assign DATA_IN	=		(ENA_F8)				?	DOA_F8:
 /*****************************************************************************
 * 32 Bit output data to external RAM
 ******************************************************************************/
+/*
 bufif0(RAM_DATA0_OUTPUT[0], DATA_OUT[0], RAM_RW_N);
 bufif0(RAM_DATA0_OUTPUT[1], DATA_OUT[1], RAM_RW_N);
 bufif0(RAM_DATA0_OUTPUT[2], DATA_OUT[2], RAM_RW_N);
@@ -1410,6 +1416,11 @@ bufif0(RAM_DATA1[12], FLOPPY_WRITE_DATA[4], RAM_RW_N);
 bufif0(RAM_DATA1[13], FLOPPY_WRITE_DATA[5], RAM_RW_N);
 bufif0(RAM_DATA1[14], FLOPPY_WRITE_DATA[6], RAM_RW_N);
 bufif0(RAM_DATA1[15], FLOPPY_WRITE_DATA[7], RAM_RW_N);
+*/
+assign RAM_DATA0_OUTPUT[7:0] = DATA_OUT[7:0];
+assign RAM_DATA0_OUTPUT[15:8] = DATA_OUT[7:0];
+assign RAM_DATA1_OUTPUT[7:0] = FLOPPY_WRITE_DATA[7:0];
+assign RAM_DATA1_OUTPUT[15:8] = FLOPPY_WRITE_DATA[7:0];
 
 /*****************************************************************************
 * Other external RAM signals
@@ -1558,6 +1569,17 @@ assign ROM_RW = 	ROM_WR_EN & ~RW_N;
 * ROMs
 * List Groups
 ******************************************************************************/
+`include "rom/rom_C0i.v"
+`include "rom/rom_C0s.v"
+`include "rom/rom_C8.v"
+`include "rom/rom_C8s.v"
+`include "rom/rom_D0.v"
+`include "rom/rom_D8.v"
+`include "rom/rom_E0.v"
+`include "rom/rom_E8.v"
+`include "rom/rom_F0.v"
+`include "rom/rom_F8.v"
+/*
 `include "rom_f8.v"
 `include "rom_f0.v"
 `include "rom_e8.v"
@@ -1568,7 +1590,7 @@ assign ROM_RW = 	ROM_WR_EN & ~RW_N;
 `include "rom_c8s.v"
 `include "rom_c0i.v"
 `include "rom_c0s.v"
-
+*/
 /*****************************************************************************
 * Hardware Clock
 ******************************************************************************/
@@ -2725,8 +2747,8 @@ assign FLOPPY_WP_READ	= ({Q6, SLOT_6IO, ADDRESS[3:0]} == 6'h3E)	?	1'b1:
 
 assign FLOPPY_VALID 		=	(!FLOPPY_CLK[4] & !FLOPPY_CLK[3]);
 
-assign FLOPPY_RD_DATA	=	DRIVE1_EN	?	{FLOPPY_VALID, RAM_DATA1[6:0]}:
-									DRIVE2_EN	?	{FLOPPY_VALID, RAM_DATA1[14:8]}:
+assign FLOPPY_RD_DATA	=	DRIVE1_EN	?	{FLOPPY_VALID, RAM_DATA1_INPUT[6:0]}:
+									DRIVE2_EN	?	{FLOPPY_VALID, RAM_DATA1_INPUT[14:8]}:
 														8'H00;
 
 assign FLOPPY_DATA		=	(FLOPPY_READ)									?	FLOPPY_RD_DATA:
