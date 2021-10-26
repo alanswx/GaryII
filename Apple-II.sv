@@ -330,17 +330,17 @@ ram0 (
 	.address_a(RAM_ADDRESS[17:0]),
 	.clock_a(CLK_50M),
 	.data_a(RAM_DATA0_OUTPUT[7:0]),
-	.enable_a(~RAM0_BE0_N),
+	.enable_a(~RAM0_BE0_N & ~RAM0_CS_N),
 	.wren_a(~RAM_RW_N),
 	.q_a(RAM_DATA0_INPUT[7:0])
 );
 
-dpram #(.addr_width_g(18),.data_width_g(8))
+dpram #(.addr_width_g(17),.data_width_g(8))
 ram1 (
-	.address_a(RAM_ADDRESS[17:0]),
+	.address_a(RAM_ADDRESS[16:0]),
 	.clock_a(CLK_50M),
 	.data_a(RAM_DATA0_OUTPUT[15:8]),
-	.enable_a(~RAM0_BE1_N ),
+	.enable_a(~RAM0_BE1_N  & ~RAM0_CS_N & ~RAM_ADDRESS[16]),
 	.wren_a(~RAM_RW_N),
 	.q_a(RAM_DATA0_INPUT[15:8])
 );
